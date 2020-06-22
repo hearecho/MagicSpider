@@ -2,6 +2,7 @@ package log
 
 
 import (
+	"io"
 	"log"
 	"os"
 )
@@ -12,7 +13,12 @@ var (
 )
 
 func InitLogger()  {
-	Info = log.New(os.Stdout,"[Info]:",log.Ldate | log.Ltime | log.Lshortfile)
-	Error = log.New(os.Stdout,"[Error]:",log.Ldate | log.Ltime | log.Lshortfile)
+	crawlerFile,err := os.OpenFile("crawler.log",os.O_CREATE|os.O_WRONLY|os.O_APPEND,0666)
+	if err!=nil{
+		log.Fatalln("打开日志文件失败：",err)
+	}
+	Info = log.New(io.MultiWriter(os.Stdout,crawlerFile),"[Info]:",log.Ldate | log.Ltime | log.Lshortfile)
+
+	Error = log.New(os.Stderr,"[Error]:",log.Ldate | log.Ltime | log.Lshortfile)
 }
 
