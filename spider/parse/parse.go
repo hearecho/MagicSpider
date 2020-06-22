@@ -2,7 +2,9 @@ package parse
 
 import (
 	"MagicSpider/spider/engine"
+	"MagicSpider/spider/log"
 	"MagicSpider/spider/model"
+	"MagicSpider/spider/setting"
 	"regexp"
 )
 
@@ -32,6 +34,7 @@ func ParesLink(body [] byte,reg map[string]string) engine.ParseRes{
 		}
 		//存储
 		result.Items = append(result.Items,item)
+		log.Info.Printf("parse resp result:%v\t [num]:%d\n",item,setting.Count)
 		//新的Requests,
 		result.Requests = append(result.Requests,engine.Request{
 			Url:       url,

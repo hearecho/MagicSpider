@@ -2,7 +2,6 @@ package engine
 
 import (
 	"MagicSpider/spider/fetch"
-	"fmt"
 )
 
 type ConcurrentEngine struct {
@@ -35,9 +34,9 @@ func (e *ConcurrentEngine) Run(seeds ...Request)  {
 		//从结果中取出存储的数据
 		result := <- out
 		//获取了信息，以后可以新增存储功能
-		for _, item := range result.Items {
-			fmt.Printf("get item:%v\n",item)
-		}
+		//for _, item := range result.Items {
+		//	fmt.Printf("get item:%v\n",item)
+		//}
 		for _,request := range result.Requests {
 			e.Scheduler.Submit(request)
 		}
