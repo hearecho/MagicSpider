@@ -67,11 +67,7 @@ func createWorker(out chan ParseRes, s Scheduler) {
 工作进程
 */
 func  worker(r Request) (ParseRes, error){
-	//log.Printf("Fetching %s", r.Url)
-	headers := map[string]string{
-		"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36",
-	}
-	body, err := fetch.Fetch(r.Url,"GET",headers,"")
+	body, err := fetch.Fetch(r.Url,"GET","")
 	if err != nil || r.ParseFunc == nil {
 		//log.Printf("Fetcher: error " + "fetching url %s: %v", r.Url, err)
 		return ParseRes{}, err

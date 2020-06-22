@@ -2,13 +2,14 @@ package fetch
 
 import (
 	"MagicSpider/spider/log"
+	"MagicSpider/spider/setting"
 	"io/ioutil"
 	"net/http"
 	"strings"
 )
 
 
-func Fetch(url,method string,headers map[string]string,form string) ([]byte,error) {
+func Fetch(url,method string,form string) ([]byte,error) {
 	client := &http.Client{}
 	method = strings.ToUpper(method)
 	req,err := http.NewRequest(method,url,strings.NewReader(form))
@@ -19,7 +20,7 @@ func Fetch(url,method string,headers map[string]string,form string) ([]byte,erro
 	if strings.EqualFold(method,"POST") {
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
-	for k,v := range headers {
+	for k,v := range setting.Headers {
 		req.Header.Set(k,v)
 	}
 	log.Info.Printf("crawling url:%s\n",req.URL)
