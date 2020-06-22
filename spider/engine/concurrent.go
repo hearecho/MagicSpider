@@ -2,6 +2,7 @@ package engine
 
 import (
 	"MagicSpider/spider/fetch"
+	"MagicSpider/spider/setting"
 )
 
 type ConcurrentEngine struct {
@@ -30,7 +31,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request)  {
 		e.Scheduler.Submit(r)
 	}
 	//处理输出的结果
-	for  {
+	for  setting.Count < setting.TotalCount {
 		//从结果中取出存储的数据
 		result := <- out
 		//获取了信息，以后可以新增存储功能
@@ -49,7 +50,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request)  {
 func createWorker(out chan ParseRes, s Scheduler) {
 	go func() {
 		in := make(chan Request)
-		for {
+		for setting.Count < setting.TotalCount{
 			s.WorkerReady(in)
 			// tell scheduler i'm ready
 			request := <- in

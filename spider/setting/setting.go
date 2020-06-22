@@ -1,8 +1,12 @@
 package setting
 
 
-var Count int
+var (
+	Count uint64
+	TotalCount uint64
+)
 
 func InitSetting()  {
-	Count = 0
+	Count = 1
+	TotalCount = 2000
 }
