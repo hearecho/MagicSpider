@@ -1,5 +1,6 @@
 package log
 
+
 import (
 	"log"
 	"os"
@@ -14,3 +15,4 @@ func InitLogger()  {
 	Info = log.New(os.Stdout,"[Info]:",log.Ldate | log.Ltime | log.Lshortfile)
 	Error = log.New(os.Stdout,"[Error]:",log.Ldate | log.Ltime | log.Lshortfile)
 }
+

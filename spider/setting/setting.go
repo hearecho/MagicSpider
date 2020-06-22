@@ -1,5 +1,6 @@
 package setting
 
+
 var Count int
 
 func InitSetting()  {
