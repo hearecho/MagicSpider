@@ -6,12 +6,19 @@ import (
 	"MagicSpider/spider/parse"
 	"MagicSpider/spider/scheduler"
 	"MagicSpider/spider/setting"
+	"fmt"
 )
 
 func init()  {
 	//初始化日志
 	log.InitLogger()
 	setting.InitSetting()
+	fmt.Println("=============Init Spider===============")
+	fmt.Printf("\n"+
+		"\t\t\t      | \n"+
+		"\t\t\t    _| \n"+
+		"\t\t\t///\\(o_o)/\\\\ \n"+
+		"\t\t\t|||  ` '  ||| \n")
 }
 func main() {
 	e := &engine.ConcurrentEngine{
