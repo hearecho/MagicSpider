@@ -1,6 +1,7 @@
 package main
 
 import (
+	"MagicSpider/spider/db"
 	"MagicSpider/spider/engine"
 	"MagicSpider/spider/log"
 	"MagicSpider/spider/parse"
@@ -19,6 +20,7 @@ func init()  {
 		"\t\t\t    _| \n"+
 		"\t\t\t///\\(o_o)/\\\\ \n"+
 		"\t\t\t|||  ` '  ||| \n")
+	db.InitDB()
 }
 func main() {
 	e := &engine.ConcurrentEngine{
@@ -29,4 +31,5 @@ func main() {
 		Url:       "https://www.douban.com/group/shanghaizufang/discussion",
 		ParseFunc: parse.ParesLink,
 	})
+	//fmt.Println(db.QuerySetting("count"))
 }
