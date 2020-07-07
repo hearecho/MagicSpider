@@ -20,7 +20,7 @@ func Fetch(url,method string,form string) ([]byte,error) {
 	if strings.EqualFold(method,"POST") {
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
-	for k,v := range setting.Headers {
+	for k,v := range setting.S.Headers {
 		req.Header.Set(k,v)
 	}
 	log.Info.Printf("crawling url:%s\n",req.URL)

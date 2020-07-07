@@ -13,13 +13,13 @@ import (
 func init()  {
 	//初始化日志
 	log.InitLogger()
-	setting.InitSetting()
 	fmt.Println("=============Init Spider===============")
 	fmt.Printf("\n"+
 		"\t\t\t      | \n"+
 		"\t\t\t    _| \n"+
 		"\t\t\t///\\(o_o)/\\\\ \n"+
 		"\t\t\t|||  ` '  ||| \n")
+	setting.InitSetting()
 	db.InitDB()
 }
 func main() {
@@ -31,5 +31,4 @@ func main() {
 		Url:       "https://www.douban.com/group/shanghaizufang/discussion",
 		ParseFunc: parse.ParesLink,
 	})
-	//fmt.Println(db.QuerySetting("count"))
 }

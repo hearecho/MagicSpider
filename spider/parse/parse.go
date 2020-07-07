@@ -36,7 +36,7 @@ func ParesLink(body [] byte,reg map[string]string) engine.ParseRes{
 		//存储
 		result.Items = append(result.Items,item)
 		log.Info.Printf("parse resp result:%v\t [num]:%d\n",item,setting.Count)
-		atomic.AddUint64(&setting.Count,1)
+		atomic.AddInt64(&setting.S.Count,1)
 		//新的Requests,
 		result.Requests = append(result.Requests,engine.Request{
 			Url:       url,

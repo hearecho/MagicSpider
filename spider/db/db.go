@@ -13,8 +13,12 @@ import (
  */
 var DB *sql.DB
 
-func InitDB()  {
-	DB,err := sql.Open("mysql",setting.DBurl)
+
+func InitDB() {
+	var err error
+	dburl := setting.S.DBusername+":"+setting.S.DBpassword+"@tcp("+setting.S.DBip+")/"+setting.S.DBname+"?charset=utf8"
+	//这里不可以使用 := 我们已经全局定义了数据
+	DB,err = sql.Open("mysql",dburl)
 	if err != nil {
 		log.Error.Printf("init database error! === %v\n",err.Error())
 		os.Exit(1)

@@ -1,25 +1,45 @@
 package setting
 
+import (
+	"MagicSpider/spider/log"
+	"encoding/json"
+	"io/ioutil"
+	"os"
+)
+
 /**
 setting 配置文件
- */
+*/
 var (
 	//finish crawl number
-	Count uint64
+	Count int64
 	//the limit of crawl
-	TotalCount uint64
+	TotalCount int64
 	//request headers
 	Headers map[string]string
 	//存储类型
-	//db连接
-	DBurl string
 )
-
-func InitSetting()  {
-	Count = 1
-	TotalCount = 2000
-	Headers = map[string]string{
-		"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36",
-	}
-	DBurl = "root:123456@tcp(127.0.0.1:3306)/spider?charset=utf8"
+type Setting struct {
+	DBusername string `json:"username"`
+	DBpassword string `json:"password"`
+	DBip       string `json:"ip"`
+	DBname     string `json:"dbname"`
+	Count      int64    `json:"count"`
+	TotalCount int64    `json:"total_count"`
+	Headers    map[string]string `json:"headers"`
 }
+var S Setting
+
+func InitSetting() {
+	data, err := ioutil.ReadFile("spider/setting/config.json")
+	if err != nil {
+		log.Error.Println("读取配置文件出错！")
+		os.Exit(3)
+	}
+	err = json.Unmarshal(data, &S)
+	if err != nil {
+		log.Error.Println("初始化配置出错")
+		os.Exit(3)
+	}
+}
+
