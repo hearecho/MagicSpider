@@ -1,10 +1,10 @@
 package parse
 
 import (
-	"MagicSpider/spider/engine"
-	"MagicSpider/spider/log"
-	"MagicSpider/spider/model"
-	"MagicSpider/spider/setting"
+	"github.com/hearecho/MagicSpider/spider/engine"
+	"github.com/hearecho/MagicSpider/spider/log"
+	"github.com/hearecho/MagicSpider/spider/model"
+	"github.com/hearecho/MagicSpider/spider/setting"
 	"regexp"
 	"sync/atomic"
 )

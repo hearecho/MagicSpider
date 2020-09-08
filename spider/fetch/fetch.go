@@ -1,8 +1,8 @@
 package fetch
 
 import (
-	"MagicSpider/spider/log"
-	"MagicSpider/spider/setting"
+	"github.com/hearecho/MagicSpider/spider/log"
+	"github.com/hearecho/MagicSpider/spider/setting"
 	"io/ioutil"
 	"net/http"
 	"strings"

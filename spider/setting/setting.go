@@ -1,8 +1,8 @@
 package setting
 
 import (
-	"MagicSpider/spider/log"
 	"encoding/json"
+	"github.com/hearecho/MagicSpider/spider/log"
 	"io/ioutil"
 	"os"
 )

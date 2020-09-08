@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"MagicSpider/spider/fetch"
-	"MagicSpider/spider/setting"
+	"github.com/hearecho/MagicSpider/spider/fetch"
+	"github.com/hearecho/MagicSpider/spider/setting"
 )
 
 type ConcurrentEngine struct {

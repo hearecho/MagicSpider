@@ -1,6 +1,6 @@
 package scheduler
 
-import "MagicSpider/spider/engine"
+import "github.com/hearecho/MagicSpider/spider/engine"
 
 //均是没有缓冲区的
 type QueuedScheduler struct {

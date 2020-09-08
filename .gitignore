@@ -1,4 +1,4 @@
 */vendor/
 *.exe
 *.log
-test/
+*/test/
