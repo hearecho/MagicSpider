@@ -3,6 +3,7 @@ package engine
 import (
 	"fmt"
 	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/fetch"
+	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/schedule"
 	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/types"
 )
 
@@ -11,34 +12,33 @@ type Engine struct {
 	WorkerCount int
 	//起始请求
 	StartRequests []types.Request
-	//设置爬取深度
+	//Schedule调度器
+	S *schedule.Schedule
 }
 
 func (e *Engine)Go()  {
-	httpRequests := make(chan types.Request)
-	items := make(chan interface{})
 	//创建worker
 	for i:=0;i<e.WorkerCount;i++ {
-		createWorker(httpRequests,items)
+		createWorker(e.S)
 	}
 	//将起始请求放入channel中
 	for _,r := range e.StartRequests {
-		httpRequests <- r
+		e.S.SubmitTask(r)
 	}
-	for item := range items {
+	for item := range e.S.Items() {
 		fmt.Println("get item: ",item)
 	}
 }
 
 //创建worker
-func createWorker(httpRequests chan types.Request,items chan interface{})  {
-	go worker(httpRequests,items)
+func createWorker(s *schedule.Schedule)  {
+	go worker(s)
 }
 
 //worker的运行逻辑，负责处理传入的requests，并得到item传回engine
-func worker(httpRequests chan types.Request,items chan interface{})  {
+func worker(s *schedule.Schedule)  {
 	for {
-		httpRequest := <- httpRequests
+		httpRequest := <- s.HttpRequests()
 		httpResp,err := fetch.Fetch(httpRequest)
 		if err != nil{
 			panic(err)
@@ -46,11 +46,11 @@ func worker(httpRequests chan types.Request,items chan interface{})  {
 		res := httpRequest.Parse(httpResp)
 		for _,r := range res.Requests {
 			//后续可以更改为schedule进行任务提交
-			httpRequests <- r
+			s.SubmitTask(r)
 		}
 		//提交items
 		for _,item := range res.Items {
-			items <- item
+			s.SubmitItem(item)
 		}
 	}
 }

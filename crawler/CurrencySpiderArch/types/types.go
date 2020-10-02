@@ -18,3 +18,10 @@ type Response struct {
 	Body []byte //爬取内容
 }
 
+//用于在多层爬虫中传递得到的item
+type Item struct {
+	//每个信息专属的requestId
+	RequestID string
+	Data interface{}
+}
+
