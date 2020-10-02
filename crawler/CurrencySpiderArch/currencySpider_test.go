@@ -15,9 +15,9 @@ func Test_CurrencySpiderArch(t *testing.T) {
 			Depth: 1,},
 	}
 	e := engine.Engine{
-		WorkerCount:   100,
+		WorkerCount:   10,
 		StartRequests: r,
-		S:schedule.NewSchedule(),
+		S:             schedule.NewSchedule(),
 	}
 	e.Go()
 }

@@ -25,3 +25,7 @@ type Item struct {
 	Data interface{}
 }
 
+func NIlParser(*Response) *ParseResult {
+	return &ParseResult{}
+}
+

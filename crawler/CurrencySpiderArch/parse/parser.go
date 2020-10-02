@@ -24,8 +24,8 @@ func NameParse(r *types.Response) *types.ParseResult {
 			Depth: r.Depth + 1}
 		res.Requests = append(res.Requests, request)
 		//处理item
-		title := Item{Title: string(item[2]), Author: string(item[3])}
-		res.Items = append(res.Items, title)
+		//title := Item{Title: string(item[2]), Author: string(item[3])}
+		//res.Items = append(res.Items, title)
 	}
 	return res
 }
@@ -33,13 +33,10 @@ func NameParse(r *types.Response) *types.ParseResult {
 func ContentParse(r *types.Response) *types.ParseResult {
 	contentRe := `<div class="contson"[^>]+>([\s\S]*?)</div>`
 	re, _ := regexp.Compile(contentRe)
-	result := re.FindAllSubmatch(r.Body, -1)
+	result := re.FindSubmatch(r.Body)
 	res := &types.ParseResult{}
-	for _, item := range result {
-		//处理item
-		content := Item{Content:string(item[1])}
-		res.Items = append(res.Items, content)
-	}
+	content := Item{Content:string(result[1])}
+	res.Items = append(res.Items, content)
 	return res
 
 }
