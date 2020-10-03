@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	"fmt"
+	items2 "github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/items"
 	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/types"
 	"sync"
 	"time"
@@ -11,14 +11,14 @@ import (
 type Schedule struct {
 	httpRequests chan types.Request
 	parseResult chan types.ParseResult
-	items chan interface{}
+	items chan items2.Item
 }
 
 func NewSchedule() *Schedule  {
 	return &Schedule{
 		httpRequests: make(chan types.Request),
 		parseResult:        make(chan types.ParseResult),
-		items:make(chan interface{}),
+		items:make(chan items2.Item),
 	}
 }
 func (s *Schedule)SubmitTask(r types.Request)  {
@@ -30,7 +30,7 @@ func (s *Schedule)SubmitRes(res types.ParseResult)  {
 		s.parseResult <- res
 	}()
 }
-func	(s *Schedule)SubmitItems(item interface{})  {
+func	(s *Schedule)SubmitItems(item items2.Item)  {
 	go func() {
 		s.items <- item
 	}()
@@ -72,7 +72,7 @@ func (s *Schedule)Process(wg *sync.WaitGroup)  {
 		case item := <- s.items:
 			i++
 			//process
-			fmt.Println(i,item)
+			item.Process()
 		case <- timeout:
 			wg.Done()
 			return

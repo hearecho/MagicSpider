@@ -1,5 +1,7 @@
 package types
 
+import items2 "github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/items"
+
 //定义Request等等信息
 
 type Request struct {
@@ -10,7 +12,7 @@ type Request struct {
 
 type ParseResult struct {
 	Requests []Request     //新的Request
-	Items    []interface{} //得到的Item
+	Items    []items2.Item//得到的Item
 }
 
 type Response struct {

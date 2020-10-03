@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"fmt"
 	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/types"
 	"regexp"
 )
@@ -11,6 +12,9 @@ type Item struct {
 	Content string
 }
 
+func (i *Item)Process()  {
+	fmt.Println(i)
+}
 func NameParse(r *types.Response) *types.ParseResult {
 	//使用re进行
 	nameRe := `<a href="(.*?)" target="_blank">([^<]+)</a>\((.*?)\)`
@@ -36,7 +40,7 @@ func ContentParse(r *types.Response) *types.ParseResult {
 	result := re.FindSubmatch(r.Body)
 	res := &types.ParseResult{}
 	content := Item{Content:string(result[1])}
-	res.Items = append(res.Items, content)
+	res.Items = append(res.Items, &content)
 	return res
 
 }
