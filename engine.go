@@ -1,10 +1,7 @@
-package engine
+package MagicSpider
 
 import (
 	"fmt"
-	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/fetch"
-	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/schedule"
-	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/types"
 	"sync"
 	"time"
 )
@@ -13,9 +10,9 @@ type Engine struct {
 	//协程个数
 	WorkerCount int
 	//起始请求
-	StartRequests []types.Request
+	StartRequests []Request
 	//Schedule调度器
-	S *schedule.Schedule
+	S *Schedule
 }
 
 func (e *Engine)Go()  {
@@ -48,7 +45,7 @@ func worker(e *Engine,wg *sync.WaitGroup)  {
 		timeout := time.After(2*time.Second)
 		select {
 		case httpRequest := <- e.S.HttpRequests():
-			httpResp,err := fetch.Fetch(httpRequest)
+			httpResp,err := Fetch(httpRequest)
 			if err != nil{
 				panic(err)
 			}

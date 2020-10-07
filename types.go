@@ -1,4 +1,4 @@
-package types
+package MagicSpider
 
 //定义Request等等信息
 
@@ -9,14 +9,18 @@ type Request struct {
 }
 
 type ParseResult struct {
-	Requests []Request     //新的Request
-	Items    []interface{} //得到的Item
+	Requests []Request //新的Request
+	Items    []Item    //得到的Item
 }
 
 type Response struct {
 	Depth int //抓取深度
 	Body []byte //爬取内容
 }
-func NilParse(*Response) *ParseResult {
+
+
+
+func NIlParser(*Response) *ParseResult {
 	return &ParseResult{}
 }
+

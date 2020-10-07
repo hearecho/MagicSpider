@@ -1,45 +1,43 @@
-package schedule
+package MagicSpider
 
 import (
-	items2 "github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/items"
-	"github.com/hearecho/MagicSpider/crawler/CurrencySpiderArch/types"
 	"sync"
 	"time"
 )
 
 //提交任务
 type Schedule struct {
-	httpRequests chan types.Request
-	parseResult chan types.ParseResult
-	items chan items2.Item
+	httpRequests chan Request
+	parseResult chan ParseResult
+	items chan Item
 }
 
 func NewSchedule() *Schedule  {
 	return &Schedule{
-		httpRequests: make(chan types.Request),
-		parseResult:        make(chan types.ParseResult),
-		items:make(chan items2.Item),
+		httpRequests: make(chan Request),
+		parseResult:        make(chan ParseResult),
+		items:make(chan Item),
 	}
 }
-func (s *Schedule)SubmitTask(r types.Request)  {
+func (s *Schedule)SubmitTask(r Request)  {
 	go func() {s.httpRequests <- r}()
 }
 
-func (s *Schedule)SubmitRes(res types.ParseResult)  {
+func (s *Schedule)SubmitRes(res ParseResult)  {
 	go func() {
 		s.parseResult <- res
 	}()
 }
-func	(s *Schedule)SubmitItems(item items2.Item)  {
+func	(s *Schedule)SubmitItems(item Item)  {
 	go func() {
 		s.items <- item
 	}()
 }
 
-func (s *Schedule)HttpRequests()  chan types.Request {
+func (s *Schedule)HttpRequests()  chan Request {
 	return s.httpRequests
 }
-func (s *Schedule)Result()  chan types.ParseResult {
+func (s *Schedule)Result()  chan ParseResult {
 	return s.parseResult
 }
 
