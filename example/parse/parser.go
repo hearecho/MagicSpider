@@ -3,7 +3,10 @@ package parse
 import (
 	"fmt"
 	"github.com/hearecho/MagicSpider"
+	"github.com/hearecho/MagicSpider/utils"
+	"os"
 	"regexp"
+	"strings"
 )
 
 type Item struct {
@@ -13,7 +16,11 @@ type Item struct {
 }
 
 func (i *Item)Process()  {
-	fmt.Println(i)
+	utils.IsNotExistMkDir("runtime/")
+	f, _ := utils.Open("runtime/result.txt",os.O_CREATE|os.O_APPEND,0777)
+	item := fmt.Sprintf("【TiTle】:%v\t 【Author】:%v\t 【Content】:%v\n",i.Title,i.Author,strings.Trim(i.Content,"\n"))
+	f.WriteString(item)
+	f.Close()
 }
 func NameParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 	//使用re进行
