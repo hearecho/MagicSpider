@@ -19,21 +19,24 @@ type Setting struct {
 	RuntimePath string
 	//MAxDepth 爬取最大深度
 	MaxDepth int
+	//爬取速率 1S爬取几次,默认速率1s 1w次(基本等于不限速)
+	Rate int
 }
 
-var S  = &Setting{
+var S = &Setting{
 	SpiderName:  "spider",
-	TimeOut:     3*time.Second,
+	TimeOut:     3 * time.Second,
 	RuntimePath: "runtime/",
 	MaxDepth:    2,
+	Rate:        10000,
 }
 
-func InitSetting()  {
+func InitSetting() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("config/")
-	path,_ := os.Getwd()
+	path, _ := os.Getwd()
 	viper.AddConfigPath(path)
 	err := viper.ReadInConfig()
 	if err != nil { // Handle errors reading the config file
@@ -43,6 +46,6 @@ func InitSetting()  {
 	S.MaxDepth = viper.GetInt("base.maxDepth")
 	S.SpiderName = viper.GetString("base.spiderName")
 	S.RuntimePath = viper.GetString("base.runtimePath")
-	S.TimeOut = viper.GetDuration("base.timout")*time.Second
+	S.TimeOut = viper.GetDuration("base.timout") * time.Second
 	log.Println("Use personal config file")
 }
