@@ -32,11 +32,11 @@ func NameParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 		//新增url
 		request := MagicSpider.Request{Url: "https://so.gushiwen.cn" + string(item[1]),
 			Parse: ContentParse,
-			Depth: r.Depth + 1}
+			Common:MagicSpider.Common{
+				Depth: r.Depth+1,
+				Meta:  &Item{Title: string(item[2]), Author: string(item[3])},
+			}}
 		res.Requests = append(res.Requests, request)
-		//处理item
-		//title := Item{Title: string(item[2]), Author: string(item[3])}
-		//res.Items = append(res.Items, title)
 	}
 	return res
 }
@@ -46,8 +46,9 @@ func ContentParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 	re, _ := regexp.Compile(contentRe)
 	result := re.FindSubmatch(r.Body)
 	res := &MagicSpider.ParseResult{}
-	content := Item{Content:string(result[1])}
-	res.Items = append(res.Items, &content)
+	//content := Item{Content:string(result[1])}
+	r.Meta.(*Item).Content = string(result[1])
+	res.Items = append(res.Items, r.Meta.(*Item))
 	return res
 
 }

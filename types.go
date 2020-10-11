@@ -3,9 +3,9 @@ package MagicSpider
 //定义Request等等信息
 
 type Request struct {
-	Url   string                    //url
+	Url   string                       //url
 	Parse func(*Response) *ParseResult //解析器,一个接口
-	Depth int                       //爬取深度
+	Common
 }
 
 type ParseResult struct {
@@ -14,13 +14,15 @@ type ParseResult struct {
 }
 
 type Response struct {
-	Depth int //抓取深度
-	Body []byte //爬取内容
+	Body  []byte      //爬取内容
+	Common
 }
-
-
 
 func NIlParser(*Response) *ParseResult {
 	return &ParseResult{}
 }
 
+type Common struct {
+	Depth int                          //爬取深度
+	Meta  interface{}                  //在不同层次的requests中传递信息
+}
