@@ -1,0 +1,5 @@
+base:
+  spiderName: "gushi"
+  maxDepth: 2
+  runtimePath: "runtime/"
+  timout: 3

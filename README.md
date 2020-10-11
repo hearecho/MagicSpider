@@ -73,7 +73,7 @@ func ContentParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 ```
 #### 2.后续计划
 
-- [ ] 实现配置功能
+- [x] 实现配置功能
 - [ ] 增加类似jquery其他解析功能
 - [ ] 增加item处理工具
 - [ ] ....

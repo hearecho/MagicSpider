@@ -16,8 +16,8 @@ type Item struct {
 }
 
 func (i *Item)Process()  {
-	utils.IsNotExistMkDir("runtime/")
-	f, _ := utils.Open("runtime/result.txt",os.O_CREATE|os.O_APPEND,0777)
+	_ = utils.IsNotExistMkDir(MagicSpider.S.RuntimePath)
+	f, _ := utils.Open(MagicSpider.S.RuntimePath+"result.txt",os.O_CREATE|os.O_APPEND,0777)
 	item := fmt.Sprintf("【TiTle】:%v\t 【Author】:%v\t 【Content】:%v\n",i.Title,i.Author,strings.Trim(i.Content,"\n"))
 	f.WriteString(item)
 	f.Close()

@@ -16,6 +16,8 @@ type Engine struct {
 }
 
 func (e *Engine)Go()  {
+	//读取配置
+	InitSetting()
 	//设置waitgroup
 	wg := &sync.WaitGroup{}
 	wg.Add(e.WorkerCount+2)

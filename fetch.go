@@ -15,10 +15,10 @@ import (
 
 func Fetch(r Request) (*Response, error) {
 	//固定深度直接终止
-	if r.Depth > 2 {
+	if r.Depth > S.MaxDepth {
 		return &Response{}, nil
 	}
-	client := &http.Client{}
+	client := &http.Client{Timeout:S.TimeOut}
 	req, err := http.NewRequest("GET", r.Url, strings.NewReader(""))
 	if err != nil {
 		return &Response{}, err
