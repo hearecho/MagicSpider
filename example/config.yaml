@@ -3,3 +3,5 @@ base:
   maxDepth: 2
   runtimePath: "runtime/"
   timout: 3
+  docType: "json"
+  rate: 1

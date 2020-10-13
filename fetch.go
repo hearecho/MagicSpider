@@ -24,7 +24,9 @@ func Fetch(r Request) (*Response, error) {
 		return &Response{}, err
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
-
+	for k,v := range r.Headers {
+		req.Header.Set(k,v)
+	}
 	resp, err := client.Do(req)
 	log.Printf("start crawle url: %s", r.Url)
 	if err != nil {

@@ -5,6 +5,7 @@ package MagicSpider
 type Request struct {
 	Url   string                       //url
 	Parse func(*Response) *ParseResult //解析器,一个接口
+	Headers map[string]string
 	Common
 }
 
@@ -14,7 +15,8 @@ type ParseResult struct {
 }
 
 type Response struct {
-	Body  []byte      //爬取内容
+	Body []byte //爬取内容
+	Doc  interface{}
 	Common
 }
 
@@ -23,6 +25,6 @@ func NIlParser(*Response) *ParseResult {
 }
 
 type Common struct {
-	Depth int                          //爬取深度
-	Meta  interface{}                  //在不同层次的requests中传递信息
+	Depth int         //爬取深度
+	Meta  interface{} //在不同层次的requests中传递信息
 }

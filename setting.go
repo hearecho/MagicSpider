@@ -21,6 +21,8 @@ type Setting struct {
 	MaxDepth int
 	//爬取速率 1S爬取几次,默认速率1s 1w次(基本等于不限速)
 	Rate int
+	//返回文件类型 html,json 默认json
+	DocType string
 }
 
 var S = &Setting{
@@ -29,6 +31,7 @@ var S = &Setting{
 	RuntimePath: "runtime/",
 	MaxDepth:    2,
 	Rate:        10000,
+	DocType:     "html",
 }
 
 func InitSetting() {
@@ -43,9 +46,23 @@ func InitSetting() {
 		log.Printf("Fatal error config file: %s will use default configuration \n", err)
 		return
 	}
-	S.MaxDepth = viper.GetInt("base.maxDepth")
-	S.SpiderName = viper.GetString("base.spiderName")
-	S.RuntimePath = viper.GetString("base.runtimePath")
-	S.TimeOut = viper.GetDuration("base.timout") * time.Second
-	log.Println("Use personal config file")
+	if viper.IsSet("base.maxDepth") {
+		S.MaxDepth = viper.GetInt("base.maxDepth")
+	}
+	if viper.IsSet("base.spiderName") {
+		S.SpiderName = viper.GetString("base.spiderName")
+	}
+	if viper.IsSet("base.runtimePath") {
+		S.RuntimePath = viper.GetString("base.runtimePath")
+	}
+	if viper.IsSet("base.timout") {
+		S.TimeOut = viper.GetDuration("base.timout") * time.Second
+	}
+	if viper.IsSet("base.rate") {
+		S.Rate = viper.GetInt("base.rate")
+	}
+	if viper.IsSet("base.docType") {
+		S.DocType = viper.GetString("base.docType")
+	}
+	log.Printf("Use personal config file%v\n",S)
 }

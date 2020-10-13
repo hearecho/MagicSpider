@@ -1,8 +1,11 @@
 package MagicSpider
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/antchfx/htmlquery"
 	"github.com/hearecho/MagicSpider/utils"
+	"strings"
 	"sync"
 	"time"
 )
@@ -52,6 +55,15 @@ func worker(e *Engine,wg *sync.WaitGroup,lr *utils.LimitRate)  {
 			select {
 			case httpRequest := <- e.S.HttpRequests():
 				httpResp,err := Fetch(httpRequest)
+				//根据Doctype设置Doc
+				if S.DocType == "html" {
+					httpResp.Doc,_ = htmlquery.Parse(strings.NewReader(string(httpResp.Body)))
+				} else {
+					err := json.Unmarshal(httpResp.Body, &httpResp.Doc)
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
 				if err != nil{
 					panic(err)
 				}
