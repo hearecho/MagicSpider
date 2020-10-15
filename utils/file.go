@@ -13,7 +13,7 @@ func CheckNotExist(src string) bool {
 }
 
 func IsNotExistMkDir(src string) error {
-	if notExist := CheckNotExist(src); notExist == true {
+	if notExist := CheckNotExist(src); notExist {
 		if err := MkDir(src); err != nil {
 			return err
 		}

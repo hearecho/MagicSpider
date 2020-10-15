@@ -20,7 +20,7 @@ func (l *LimitRate) Limit() bool {
 	for {
 		l.lock.Lock()
 		//判断最后一次执行时间与当前时间是否大于限制速率
-		if time.Now().Sub(l.lastAction) > l.interval {
+		if time.Since(l.lastAction) > l.interval {
 			l.lastAction = time.Now()
 			result = true
 		}
