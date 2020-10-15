@@ -3,11 +3,12 @@ package MagicSpider
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/antchfx/htmlquery"
-	"github.com/hearecho/MagicSpider/utils"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/antchfx/htmlquery"
+	"github.com/hearecho/MagicSpider/utils"
 )
 
 type Engine struct {
@@ -19,20 +20,20 @@ type Engine struct {
 	S *Schedule
 }
 
-func (e *Engine)Go()  {
+func (e *Engine) Go() {
 	//读取配置
 	InitSetting()
 	//设置waitgroup
 	wg := &sync.WaitGroup{}
-	wg.Add(e.WorkerCount+2)
+	wg.Add(e.WorkerCount + 2)
 	lr := &utils.LimitRate{}
 	lr.SetRate(S.Rate)
 	//创建worker
-	for i:=0;i<e.WorkerCount;i++ {
-		createWorker(e,wg,lr)
+	for i := 0; i < e.WorkerCount; i++ {
+		createWorker(e, wg, lr)
 	}
 	//将起始请求放入channel中
-	for _,r := range e.StartRequests {
+	for _, r := range e.StartRequests {
 		e.S.SubmitTask(r)
 	}
 	//处理Res
@@ -43,29 +44,29 @@ func (e *Engine)Go()  {
 }
 
 //创建worker
-func createWorker(e *Engine,wg *sync.WaitGroup,lr *utils.LimitRate)  {
-	go worker(e,wg,lr)
+func createWorker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
+	go worker(e, wg, lr)
 }
 
 //worker的运行逻辑，负责处理传入的requests，并得到item传回engine
-func worker(e *Engine,wg *sync.WaitGroup,lr *utils.LimitRate)  {
+func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 	for {
 		if lr.Limit() {
-			timeout := time.After(2*time.Second)
+			timeout := time.After(2 * time.Second)
 			select {
-			case httpRequest := <- e.S.HttpRequests():
-				httpResp,err := Fetch(httpRequest)
+			case httpRequest := <-e.S.HttpRequests():
+				httpResp, err := Fetch(httpRequest)
 				//根据Doctype设置Doc
 				if S.DocType == "html" {
-					httpResp.Doc,_ = htmlquery.Parse(strings.NewReader(string(httpResp.Body)))
+					httpResp.Doc, _ = htmlquery.Parse(strings.NewReader(string(httpResp.Body)))
 				} else {
 					err := json.Unmarshal(httpResp.Body, &httpResp.Doc)
 					if err != nil {
 						fmt.Println(err)
 					}
 				}
-				if err != nil{
-					panic(err)
+				if err != nil {
+					fmt.Println(err)
 				}
 				res := httpRequest.Parse(httpResp)
 				//将res添加到通道中
@@ -77,4 +78,3 @@ func worker(e *Engine,wg *sync.WaitGroup,lr *utils.LimitRate)  {
 		}
 	}
 }
-

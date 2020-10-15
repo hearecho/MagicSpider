@@ -3,8 +3,8 @@ package MagicSpider
 //定义Request等等信息
 
 type Request struct {
-	Url   string                       //url
-	Parse func(*Response) *ParseResult //解析器,一个接口
+	Url     string                       //url
+	Parse   func(*Response) *ParseResult //解析器,一个接口
 	Headers map[string]string
 	Common
 }

@@ -2,11 +2,12 @@ package gushi
 
 import (
 	"fmt"
-	"github.com/hearecho/MagicSpider"
-	"github.com/hearecho/MagicSpider/utils"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/hearecho/MagicSpider"
+	"github.com/hearecho/MagicSpider/utils"
 )
 
 type Item struct {
@@ -15,10 +16,10 @@ type Item struct {
 	Content string
 }
 
-func (i *Item)Process()  {
+func (i *Item) Process() {
 	_ = utils.IsNotExistMkDir(MagicSpider.S.RuntimePath)
-	f, _ := utils.Open(MagicSpider.S.RuntimePath+"result.txt",os.O_CREATE|os.O_APPEND,0777)
-	item := fmt.Sprintf("【TiTle】:%v\t 【Author】:%v\t 【Content】:%v\n",i.Title,i.Author,strings.Trim(i.Content,"\n"))
+	f, _ := utils.Open(MagicSpider.S.RuntimePath+"result.txt", os.O_CREATE|os.O_APPEND, 0777)
+	item := fmt.Sprintf("【TiTle】:%v\t 【Author】:%v\t 【Content】:%v\n", i.Title, i.Author, strings.Trim(i.Content, "\n"))
 	f.WriteString(item)
 	f.Close()
 }
@@ -32,8 +33,8 @@ func NameParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 		//新增url
 		request := MagicSpider.Request{Url: "https://so.gushiwen.cn" + string(item[1]),
 			Parse: ContentParse,
-			Common:MagicSpider.Common{
-				Depth: r.Depth+1,
+			Common: MagicSpider.Common{
+				Depth: r.Depth + 1,
 				Meta:  &Item{Title: string(item[2]), Author: string(item[3])},
 			}}
 		res.Requests = append(res.Requests, request)

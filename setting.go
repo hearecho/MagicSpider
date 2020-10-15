@@ -1,10 +1,11 @@
 package MagicSpider
 
 import (
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 /**
@@ -64,5 +65,5 @@ func InitSetting() {
 	if viper.IsSet("base.docType") {
 		S.DocType = viper.GetString("base.docType")
 	}
-	log.Printf("Use personal config file%v\n",S)
+	log.Printf("Use personal config file%v\n", S)
 }
