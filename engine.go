@@ -1,13 +1,13 @@
 package MagicSpider
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"sync"
 	"time"
 
-	"github.com/antchfx/htmlquery"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/hearecho/MagicSpider/utils"
 )
 
@@ -58,7 +58,7 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 				httpResp, err := Fetch(httpRequest)
 				//根据Doctype设置Doc
 				if S.DocType == "html" {
-					httpResp.Doc, _ = htmlquery.Parse(strings.NewReader(string(httpResp.Body)))
+					httpResp.Doc, _ = goquery.NewDocumentFromReader(bytes.NewReader(httpResp.Body))
 				} else {
 					err := json.Unmarshal(httpResp.Body, &httpResp.Doc)
 					if err != nil {
