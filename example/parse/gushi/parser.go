@@ -18,8 +18,8 @@ type Item struct {
 
 func (i *Item) Process() {
 	_ = utils.IsNotExistMkDir(MagicSpider.S.RuntimePath)
-	f, _ := utils.Open(MagicSpider.S.RuntimePath+"result.txt", os.O_CREATE|os.O_APPEND, 0777)
-	item := fmt.Sprintf("【TiTle】:%v\t 【Author】:%v\t 【Content】:%v\n", i.Title, i.Author, strings.Trim(i.Content, "\n"))
+	f, _ := utils.Open(MagicSpider.S.RuntimePath+"result.csv", os.O_CREATE|os.O_APPEND, 0777)
+	item := fmt.Sprintf("%v,%v,%v\n", i.Title, i.Author, strings.Trim(i.Content, "\n"))
 	f.WriteString(item)
 	f.Close()
 }
@@ -47,7 +47,6 @@ func ContentParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 	re, _ := regexp.Compile(contentRe)
 	result := re.FindSubmatch(r.Body)
 	res := &MagicSpider.ParseResult{}
-	//content := Item{Content:string(result[1])}
 	r.Meta.(*Item).Content = string(result[1])
 	res.Items = append(res.Items, r.Meta.(*Item))
 	return res
