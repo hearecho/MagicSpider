@@ -19,7 +19,7 @@ func Fetch(r Request) (*Response, error) {
 	if r.Depth > S.MaxDepth {
 		return &Response{}, nil
 	}
-	client := &http.Client{Timeout: S.TimeOut}
+	client := &http.Client{}
 	req, err := http.NewRequest("GET", r.Url, strings.NewReader(""))
 	if err != nil {
 		return &Response{}, err

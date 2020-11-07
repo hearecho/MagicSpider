@@ -20,25 +20,17 @@ func NewSchedule() *Schedule {
 	}
 }
 func (s *Schedule) SubmitTask(r Request) {
-	go func() { s.httpRequests <- r }()
+	s.httpRequests <- r
 }
 
 func (s *Schedule) SubmitRes(res ParseResult) {
-	go func() {
-		s.parseResult <- res
-	}()
+	s.parseResult <- res
 }
 func (s *Schedule) SubmitItems(item Item) {
-	go func() {
-		s.items <- item
-	}()
+	s.items <- item
 }
-
-func (s *Schedule) HttpRequests() chan Request {
+func (s *Schedule)HttpRequests()  chan Request{
 	return s.httpRequests
-}
-func (s *Schedule) Result() chan ParseResult {
-	return s.parseResult
 }
 
 //通信
@@ -49,10 +41,10 @@ func (s *Schedule) Communicate(wg *sync.WaitGroup) {
 		case res := <-s.parseResult:
 			//处理requests
 			for _, r := range res.Requests {
-				s.SubmitTask(r)
+				go s.SubmitTask(r)
 			}
 			for _, item := range res.Items {
-				s.SubmitItems(item)
+				go s.SubmitItems(item)
 			}
 		case <-timeout:
 			wg.Done()

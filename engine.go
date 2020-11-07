@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -56,17 +57,17 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 			select {
 			case httpRequest := <-e.S.HttpRequests():
 				httpResp, err := Fetch(httpRequest)
+				if err != nil {
+					log.Panicln(err)
+				}
 				//根据Doctype设置Doc
 				if S.DocType == "html" {
-					httpResp.Doc, _ = goquery.NewDocumentFromReader(bytes.NewReader(httpResp.Body))
+					httpResp.Doc, err = goquery.NewDocumentFromReader(bytes.NewReader(httpResp.Body))
 				} else {
-					err := json.Unmarshal(httpResp.Body, &httpResp.Doc)
-					if err != nil {
-						fmt.Println(err)
-					}
+					err = json.Unmarshal(httpResp.Body, &httpResp.Doc)
 				}
 				if err != nil {
-					fmt.Println(err)
+					log.Panicln(err)
 				}
 				res := httpRequest.Parse(httpResp)
 				//将res添加到通道中
