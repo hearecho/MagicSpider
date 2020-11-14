@@ -29,7 +29,7 @@ func (s *Schedule) SubmitRes(res ParseResult) {
 func (s *Schedule) SubmitItems(item Item) {
 	s.items <- item
 }
-func (s *Schedule)HttpRequests()  chan Request{
+func (s *Schedule) HttpRequests() chan Request {
 	return s.httpRequests
 }
 
@@ -55,13 +55,10 @@ func (s *Schedule) Communicate(wg *sync.WaitGroup) {
 
 //处理items
 func (s *Schedule) Process(wg *sync.WaitGroup) {
-	i := 0
 	for {
 		timeout := time.After(2 * time.Second)
 		select {
 		case item := <-s.items:
-			i++
-			//process
 			item.Process()
 		case <-timeout:
 			wg.Done()

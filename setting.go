@@ -1,7 +1,7 @@
 package MagicSpider
 
 import (
-	"log"
+	"github.com/hearecho/MagicSpider/utils"
 	"os"
 	"time"
 
@@ -24,6 +24,8 @@ type Setting struct {
 	Rate int
 	//返回文件类型 html,json 默认json
 	DocType string
+	//日志级别
+	LogLevel int
 }
 
 var S = &Setting{
@@ -33,6 +35,8 @@ var S = &Setting{
 	MaxDepth:    2,
 	Rate:        10000,
 	DocType:     "html",
+	LogLevel: 1,
+
 }
 
 func InitSetting() {
@@ -44,7 +48,7 @@ func InitSetting() {
 	viper.AddConfigPath(path)
 	err := viper.ReadInConfig()
 	if err != nil { // Handle errors reading the config file
-		log.Printf("Fatal error config file: %s will use default configuration \n", err)
+		utils.Error("Fatal error config file: %s will use default configuration \n", err)
 		return
 	}
 	if viper.IsSet("base.maxDepth") {
@@ -65,5 +69,8 @@ func InitSetting() {
 	if viper.IsSet("base.docType") {
 		S.DocType = viper.GetString("base.docType")
 	}
-	log.Printf("Use personal config file%v\n", S)
+	if viper.IsSet("base.logLevel") {
+		S.LogLevel = viper.GetInt("base.logLevel")
+	}
+	utils.Info("读取配置", "")
 }

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -31,23 +30,19 @@ func (e *Engine) Go() {
 	lr.SetRate(S.Rate)
 	//创建worker
 	for i := 0; i < e.WorkerCount; i++ {
-		createWorker(e, wg, lr)
-	}
-	//将起始请求放入channel中
-	for _, r := range e.StartRequests {
-		e.S.SubmitTask(r)
+		go worker(e, wg, lr)
 	}
 	//处理Res
 	go e.S.Communicate(wg)
 	go e.S.Process(wg)
+	//将起始请求放入channel中
+	for _, r := range e.StartRequests {
+		e.S.SubmitTask(r)
+	}
 	wg.Wait()
 	fmt.Println("爬取结束")
 }
 
-//创建worker
-func createWorker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
-	go worker(e, wg, lr)
-}
 
 //worker的运行逻辑，负责处理传入的requests，并得到item传回engine
 func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
@@ -58,7 +53,7 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 			case httpRequest := <-e.S.HttpRequests():
 				httpResp, err := Fetch(httpRequest)
 				if err != nil {
-					log.Panicln(err)
+					utils.Error("\v",err)
 				}
 				//根据Doctype设置Doc
 				if S.DocType == "html" {
@@ -67,11 +62,11 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 					err = json.Unmarshal(httpResp.Body, &httpResp.Doc)
 				}
 				if err != nil {
-					log.Panicln(err)
+					utils.Error("\v",err)
 				}
 				res := httpRequest.Parse(httpResp)
 				//将res添加到通道中
-				e.S.SubmitRes(*res)
+				go e.S.SubmitRes(*res)
 			case <-timeout:
 				wg.Done()
 				return
