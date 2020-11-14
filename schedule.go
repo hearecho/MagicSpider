@@ -14,9 +14,9 @@ type Schedule struct {
 
 func NewSchedule() *Schedule {
 	return &Schedule{
-		httpRequests: make(chan Request),
-		parseResult:  make(chan ParseResult),
-		items:        make(chan Item),
+		httpRequests: make(chan Request,10),
+		parseResult:  make(chan ParseResult,10),
+		items:        make(chan Item,10),
 	}
 }
 func (s *Schedule) SubmitTask(r Request) {
@@ -24,7 +24,9 @@ func (s *Schedule) SubmitTask(r Request) {
 }
 
 func (s *Schedule) SubmitRes(res ParseResult) {
-	s.parseResult <- res
+	go func(res ParseResult) {
+		s.parseResult <- res
+	}(res)
 }
 func (s *Schedule) SubmitItems(item Item) {
 	s.items <- item

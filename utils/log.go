@@ -62,29 +62,29 @@ func getLogFilePath() string {
 }
 
 
-func Debug(format string,v ...interface{}) {
+func Debug(v ...interface{}) {
 	setPrefix(DEBUG)
-	logger.Printf(format+"\n",v)
+	logger.Println(v)
 }
 
-func Info(format string,v ...interface{}) {
+func Info(v ...interface{}) {
 	setPrefix(INFO)
-	logger.Printf(format+"\n",v)
+	logger.Println(v)
 }
 
-func Warn(format string,v ...interface{}) {
+func Warn(v ...interface{}) {
 	setPrefix(WARNING)
-	logger.Printf(format+"\n",v)
+	logger.Println(v)
 }
 
-func Error(format string,v ...interface{}) {
+func Error(v ...interface{}) {
 	setPrefix(ERROR)
-	logger.Printf(format+"\n",v)
+	logger.Println(v)
 }
 
-func Fatal(format string,v ...interface{}) {
+func Fatal(v ...interface{}) {
 	setPrefix(FATAL)
-	logger.Printf(format+"\n",v)
+	logger.Println(v)
 }
 
 func setPrefix(level Level) {

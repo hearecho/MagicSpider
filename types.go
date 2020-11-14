@@ -4,7 +4,7 @@ package MagicSpider
 
 type Request struct {
 	Url     string                       //url
-	Parse   func(*Response) *ParseResult //解析器,一个接口
+	Parse   func(*Response) ParseResult //解析器,一个接口
 	Headers map[string]string
 	Common
 }
@@ -20,8 +20,8 @@ type Response struct {
 	Common
 }
 
-func NIlParser(*Response) *ParseResult {
-	return &ParseResult{}
+func NIlParser(*Response) ParseResult {
+	return ParseResult{}
 }
 
 type Common struct {

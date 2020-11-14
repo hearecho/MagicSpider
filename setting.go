@@ -1,6 +1,7 @@
 package MagicSpider
 
 import (
+	"fmt"
 	"github.com/hearecho/MagicSpider/utils"
 	"os"
 	"time"
@@ -48,7 +49,7 @@ func InitSetting() {
 	viper.AddConfigPath(path)
 	err := viper.ReadInConfig()
 	if err != nil { // Handle errors reading the config file
-		utils.Error("Fatal error config file: %s will use default configuration \n", err)
+		utils.Error(fmt.Sprintf("Fatal error config file: will use default configuration \n", err))
 		return
 	}
 	if viper.IsSet("base.maxDepth") {
@@ -72,5 +73,5 @@ func InitSetting() {
 	if viper.IsSet("base.logLevel") {
 		S.LogLevel = viper.GetInt("base.logLevel")
 	}
-	utils.Info("读取配置", "")
+	utils.Info("读取配置")
 }

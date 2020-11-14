@@ -24,7 +24,7 @@ func Fetch(r Request) (*Response, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", r.Url, strings.NewReader(""))
 	if err != nil {
-		utils.Error("\v",err)
+		utils.Error(fmt.Sprintf("%v",err))
 		return &Response{}, err
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
@@ -34,7 +34,7 @@ func Fetch(r Request) (*Response, error) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		utils.Error("\v",err)
+		utils.Error(fmt.Sprintf("%v",err))
 		return &Response{}, err
 	}
 	if resp.StatusCode != http.StatusOK {
@@ -46,12 +46,11 @@ func Fetch(r Request) (*Response, error) {
 	reader := transform.NewReader(bodyReader, encode.NewDecoder())
 	body, err := ioutil.ReadAll(reader)
 	if err != nil {
-		utils.Error("\v",err)
+		utils.Error(fmt.Sprintf("%v",err))
 		return &Response{}, err
 	}
 	usedTime := time.Now().UnixNano()/ 1e6-start
-	//utils.Debug("crawl url: %s,use time:%d", r.Url,usedTime)
-	fmt.Printf("crawl url: %s\tuse time:%dms\n", r.Url,usedTime)
+	utils.Info(fmt.Sprintf("crawl url:%s\tuse time:%dms",r.Url,usedTime))
 	return &Response{Body: body, Common: Common{
 		Depth: r.Depth,
 		Meta:  r.Meta,
@@ -62,7 +61,7 @@ func Fetch(r Request) (*Response, error) {
 func determineEncoding(r *bufio.Reader) encoding.Encoding {
 	bytes, err := r.Peek(1024)
 	if err != nil {
-		utils.Error("\v",err)
+		utils.Error(fmt.Sprintf("%v",err))
 		return unicode.UTF8
 	}
 	e, _, _ := charset.DetermineEncoding(bytes, "")
