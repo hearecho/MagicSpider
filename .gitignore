@@ -3,3 +3,4 @@
 *.log
 */test/
 /example/runtime
+*.yaml

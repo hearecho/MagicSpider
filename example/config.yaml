@@ -4,5 +4,5 @@ base:
   runtimePath: "runtime/"
   timout: 4
   docType: "html"
-  rate: 1
+#  rate: 1
   logLevel: 1

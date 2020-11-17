@@ -21,6 +21,7 @@ type Engine struct {
 }
 
 func (e *Engine) Go() {
+	start := time.Now().UnixNano() / 1e6
 	//读取配置
 	InitSetting()
 	//设置waitgroup
@@ -40,7 +41,7 @@ func (e *Engine) Go() {
 	go e.S.Communicate(wg)
 	go e.S.Process(wg)
 	wg.Wait()
-	utils.Info("爬取结束")
+	utils.Info(fmt.Sprintf("crawl end. use time:%dms",time.Now().UnixNano()/1e6-start))
 }
 
 
