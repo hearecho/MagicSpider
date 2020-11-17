@@ -55,6 +55,7 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 				httpResp, err := Fetch(httpRequest)
 				if err != nil {
 					utils.Error(fmt.Sprintf("%v",err))
+					break
 				}
 				//根据Doctype设置Doc
 				if S.DocType == "html" {
@@ -64,6 +65,7 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 				}
 				if err != nil {
 					utils.Error(fmt.Sprintf("%v",err))
+					break
 				}
 				start := time.Now().UnixNano()/1e6
 				res := httpRequest.Parse(httpResp)

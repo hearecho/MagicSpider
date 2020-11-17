@@ -1,4 +1,4 @@
-package gushi
+package main
 
 import (
 	"fmt"

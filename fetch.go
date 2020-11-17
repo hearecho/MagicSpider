@@ -60,7 +60,7 @@ func Fetch(r Request) (*Response, error) {
 //确定读入
 func determineEncoding(r *bufio.Reader) encoding.Encoding {
 	bytes, err := r.Peek(1024)
-	if err != nil {
+	if err != nil && S.DocType != "json"{
 		utils.Error(fmt.Sprintf("%v",err))
 		return unicode.UTF8
 	}

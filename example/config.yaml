@@ -1,8 +1,0 @@
-base:
-  spiderName: "gushi"
-  maxDepth: 2
-  runtimePath: "runtime/"
-  timout: 4
-  docType: "html"
-#  rate: 1
-  logLevel: 1

@@ -54,7 +54,7 @@ func openLogFile(name string, path string) (*os.File, error) {
 }
 
 func getLogFileName() string {
-	return "log_"+strconv.Itoa(int(time.Now().Unix()))
+	return "log_"+strconv.Itoa(int(time.Now().Unix()))+".log"
 }
 
 func getLogFilePath() string {

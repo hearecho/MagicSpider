@@ -74,9 +74,11 @@ func ContentParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 #### 2.后续计划
 
 - [x] 实现配置功能
-- [ ] 增加类似jquery其他解析功能
-- [ ] 增加item处理工具
-- [ ] ....
+- [x] 增加类似jquery其他解析功能
+- [x] 增加item处理工具
+- [x] 增加多输出log
+- [ ] 增加数据库存储
+- [ ] 增加请求失败，请求超时，请求代理等等
 
 
 

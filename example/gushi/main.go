@@ -1,7 +1,6 @@
 package main
 
 import (
-	"example/parse/gushi"
 	"github.com/hearecho/MagicSpider"
 	"log"
 	"net/http"
@@ -14,10 +13,10 @@ func main() {
 	}()
 	r := []MagicSpider.Request{{
 			Url:   "https://so.gushiwen.cn/gushi/tangshi.aspx",
-			Parse: gushi.NameParse,
+			Parse: NameParse,
 			Common: MagicSpider.Common{
 				Depth: 1,
-				Meta:  &gushi.Item{},
+				Meta:  &Item{},
 			},
 		}}
 	e := MagicSpider.Engine{
