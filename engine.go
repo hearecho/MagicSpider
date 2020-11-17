@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/antchfx/htmlquery"
 	"sync"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/hearecho/MagicSpider/utils"
 )
 
@@ -59,7 +59,7 @@ func worker(e *Engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
 				}
 				//根据Doctype设置Doc
 				if S.DocType == "html" {
-					httpResp.Doc, err = goquery.NewDocumentFromReader(bytes.NewReader(httpResp.Body))
+					httpResp.Doc, err = htmlquery.Parse(bytes.NewReader(httpResp.Body))
 				} else {
 					err = json.Unmarshal(httpResp.Body, &httpResp.Doc)
 				}

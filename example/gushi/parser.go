@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/antchfx/htmlquery"
+	"golang.org/x/net/html"
 	"os"
 	"regexp"
 	"strings"
@@ -43,11 +45,14 @@ func NameParse(r *MagicSpider.Response) MagicSpider.ParseResult {
 }
 
 func ContentParse(r *MagicSpider.Response) MagicSpider.ParseResult {
-	contentRe := `<div class="contson"[^>]+>([\s\S]*?)</div>`
-	re, _ := regexp.Compile(contentRe)
-	result := re.FindSubmatch(r.Body)
 	res := &MagicSpider.ParseResult{}
-	r.Meta.(*Item).Content = string(result[1])
+	//contentRe := `<div class="contson"[^>]+>([\s\S]*?)</div>`
+	//re, _ := regexp.Compile(contentRe)
+	//result := re.FindSubmatch(r.Body)
+	node := r.Doc.(*html.Node)
+	content := htmlquery.Find(node,"//div[@class='contson']")[0]
+
+	r.Meta.(*Item).Content = htmlquery.InnerText(content)
 	res.Items = append(res.Items, r.Meta.(*Item))
 	return *res
 
