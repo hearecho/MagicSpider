@@ -17,10 +17,10 @@ func main() {
 				Meta:  &parse.Item{},
 			}},
 	}
-	e := MagicSpider.Engine{
-		WorkerCount:   100,
-		StartRequests: r,
-		S:             MagicSpider.NewSchedule(),
+	e := MagicSpider.engine{
+		workerCount:   100,
+		startRequests: r,
+		s:             MagicSpider.NewSchedule(),
 	}
 	e.Go()
 }
@@ -60,7 +60,7 @@ func NameParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 }
 
 func ContentParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
-	contentRe := `<div class="contson"[^>]+>([\s\S]*?)</div>`
+	contentRe := `<div class="contson"[^>]+>([\s\s]*?)</div>`
 	re, _ := regexp.Compile(contentRe)
 	result := re.FindSubmatch(r.Body)
 	res := &MagicSpider.ParseResult{}

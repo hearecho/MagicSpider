@@ -19,10 +19,6 @@ func main() {
 				Meta:  &Item{},
 			},
 		}}
-	e := MagicSpider.Engine{
-		WorkerCount:   10,
-		StartRequests: r,
-		S:             MagicSpider.NewSchedule(),
-	}
+	e := MagicSpider.NewEngine(10,r)
 	e.Go()
 }

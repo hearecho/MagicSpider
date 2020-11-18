@@ -46,7 +46,7 @@ func NameParse(r *MagicSpider.Response) MagicSpider.ParseResult {
 
 func ContentParse(r *MagicSpider.Response) MagicSpider.ParseResult {
 	res := &MagicSpider.ParseResult{}
-	//contentRe := `<div class="contson"[^>]+>([\s\S]*?)</div>`
+	//contentRe := `<div class="contson"[^>]+>([\s\s]*?)</div>`
 	//re, _ := regexp.Compile(contentRe)
 	//result := re.FindSubmatch(r.Body)
 	node := r.Doc.(*html.Node)

@@ -18,10 +18,6 @@ func main() {
 			},
 		})
 	}
-	e := MagicSpider.Engine{
-		WorkerCount:   10,
-		StartRequests: requests,
-		S:             MagicSpider.NewSchedule(),
-	}
+	e := MagicSpider.NewEngine(10,requests)
 	e.Go()
 }
