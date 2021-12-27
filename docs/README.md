@@ -7,6 +7,11 @@ go语言实现一个并发爬虫框架,目前仍然在完善中。初步具有�
 go get github.com/hearecho/MagicSpider
 ```
 ##### 启动程序
+其中Request结构体中，`Url`就是请求链接，`Parse`为该链接对应的解析函数，`Common`
+为中间多层抓取时间中间传递的参数。
+
+`engine`中的构造参数主要是`workerCount`即下载器的协程数量，`startReequests`
+即开始抓取时间的`Request`请求,`s`则是指的所使用的调度器。
 ```go
 func main() {
 	r := []MagicSpider.Request{
@@ -25,7 +30,29 @@ func main() {
 	e.Go()
 }
 ```
+##### 配置文件
+配置文件放置在当前工作环境下即可，配置文件格式为`config.yaml`。默认配置文件如下所示：
+```yaml
+base:
+  spiderName: "spider"
+  docType: "html"
+  maxDepth: 0
+  runtimePath: "runtime/"
+  timout: 3
+  rate: 10000
+  logLevel: 1
+```
 ##### 编写解析函数以及存储使用的Item
+`Item`结构体字段可以自定义，但是要实现`Process`方法。`Process`方法用于对抓取到的信息进行存储。
+
+解析函数都需要返回`*MagicSpider.ParseResult`，其字段如下：
+```go
+type ParseResult struct {
+	Requests []Request //新的Request
+	Items    []Item    //得到的Item
+}
+```
+
 ```go
 type Item struct {
 	Title   string
@@ -74,8 +101,8 @@ func ContentParse(r *MagicSpider.Response) *MagicSpider.ParseResult {
 #### 2.后续计划
 
 - [x] 实现配置功能
-- [ ] 增加类似jquery其他解析功能
-- [ ] 增加item处理工具
+- [x] 增加类似jquery其他解析功能
+- [x] 增加item处理工具
 - [ ] ....
 
 
