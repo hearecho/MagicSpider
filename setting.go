@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hearecho/MagicSpider/utils"
 	"os"
+	"reflect"
 	"time"
 
 	"github.com/spf13/viper"
@@ -36,8 +37,18 @@ var S = &Setting{
 	MaxDepth:    2,
 	Rate:        10000,
 	DocType:     "html",
-	LogLevel: 1,
+	LogLevel:    1,
+}
 
+func printSettings() {
+	// 通过反射获取结构体中的值
+	t := reflect.TypeOf(*S)
+	for i := 0; i < t.NumField(); i++ {
+		name := t.Field(i).Name
+		v := reflect.ValueOf(*S)
+		val := v.FieldByName(name)
+		fmt.Printf("%s:%v\n", name, val)
+	}
 }
 
 func InitSetting() {
@@ -50,6 +61,7 @@ func InitSetting() {
 	err := viper.ReadInConfig()
 	if err != nil { // Handle errors reading the config file
 		utils.Error(fmt.Sprintf("Fatal error config file: will use default configuration \n", err))
+		printSettings()
 		return
 	}
 	if viper.IsSet("base.maxDepth") {
@@ -73,5 +85,6 @@ func InitSetting() {
 	if viper.IsSet("base.logLevel") {
 		S.LogLevel = viper.GetInt("base.logLevel")
 	}
-	utils.Info("读取配置")
+	utils.Info("读取配置如下:")
+	printSettings()
 }

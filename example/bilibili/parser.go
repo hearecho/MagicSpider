@@ -16,8 +16,14 @@ func (i *Item) Process()  {
 	_ = utils.IsNotExistMkDir(MagicSpider.S.RuntimePath)
 	f, _ := utils.Open(MagicSpider.S.RuntimePath+"result.csv", os.O_CREATE|os.O_APPEND, 0777)
 	item := fmt.Sprintf("%v,%v\n", i.Name, i.Level)
-	f.WriteString(item)
-	f.Close()
+	_, err := f.WriteString(item)
+	if err != nil {
+		return
+	}
+	err = f.Close()
+	if err != nil {
+		return
+	}
 }
 
 func ResParse(r *MagicSpider.Response) MagicSpider.ParseResult {
