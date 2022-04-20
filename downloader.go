@@ -2,11 +2,15 @@ package MagicSpider
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/antchfx/htmlquery"
 	"github.com/hearecho/MagicSpider/utils"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"golang.org/x/net/html/charset"
@@ -14,6 +18,48 @@ import (
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
+
+
+
+//worker的运行逻辑，负责处理传入的requests，并得到item传回engine
+func downloader(e *engine, wg *sync.WaitGroup, lr *utils.LimitRate) {
+	for {
+		if lr.Limit(){
+			timeout := time.After(2 * time.Second)
+			select {
+			case httpRequest := <-e.requests:
+				httpResp, err := Fetch(httpRequest)
+				if err != nil {
+					utils.Error(fmt.Sprintf("%v",err))
+					break
+				}
+				//根据Doctype设置Doc
+				if S.DocType == "html" {
+					httpResp.Doc, err = htmlquery.Parse(bytes.NewReader(httpResp.Body))
+				} else {
+					err = json.Unmarshal(httpResp.Body, &httpResp.Doc)
+				}
+				if err != nil {
+					utils.Error(fmt.Sprintf("%v",err))
+					break
+				}
+				start := time.Now().UnixNano()/1e6
+				// 这里是解析
+				// 解析部分也可以开启协程
+				res := httpRequest.Parse(httpResp)
+				usedTime := time.Now().UnixNano()/1e6 - start
+				utils.Info(fmt.Sprintf("parse web:%s content used time:%dms",httpRequest.Url,usedTime))
+				//将res添加到通道中
+				go func() {
+					e.parseResults <- res
+				}()
+			case <-timeout:
+				wg.Done()
+				return
+			}
+		}
+	}
+}
 
 func Fetch(r Request) (*Response, error) {
 	//固定深度直接终止
@@ -59,11 +105,11 @@ func Fetch(r Request) (*Response, error) {
 
 //确定读入
 func determineEncoding(r *bufio.Reader) encoding.Encoding {
-	bytes, err := r.Peek(1024)
+	peek, err := r.Peek(1024)
 	if err != nil && S.DocType != "json"{
 		utils.Error(fmt.Sprintf("%v",err))
 		return unicode.UTF8
 	}
-	e, _, _ := charset.DetermineEncoding(bytes, "")
+	e, _, _ := charset.DetermineEncoding(peek, "")
 	return e
 }

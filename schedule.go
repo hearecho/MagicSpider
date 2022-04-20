@@ -1,70 +1,50 @@
 package MagicSpider
 
 import (
+	"github.com/bits-and-blooms/bloom/v3"
 	"sync"
-	"time"
 )
 
-//提交任务
-type Schedule struct {
-	httpRequests chan Request
-	parseResult  chan ParseResult
-	items        chan Item
+type schedule interface {
+	Put(request Request, requests chan Request)
 }
 
-func NewSchedule() *Schedule {
-	return &Schedule{
-		httpRequests: make(chan Request,10),
-		parseResult:  make(chan ParseResult,10),
-		items:        make(chan Item,10),
-	}
-}
-func (s *Schedule) SubmitTask(r Request) {
-	s.httpRequests <- r
+// 队列实现
+type ScheduleQueue struct {
+	Queue []Request
+	Filter *bloom.BloomFilter
+	sync.Mutex
 }
 
-func (s *Schedule) SubmitRes(res ParseResult) {
-	go func(res ParseResult) {
-		s.parseResult <- res
-	}(res)
-}
-func (s *Schedule) SubmitItems(item Item) {
-	s.items <- item
-}
-func (s *Schedule) HttpRequests() chan Request {
-	return s.httpRequests
-}
-
-//通信
-func (s *Schedule) Communicate(wg *sync.WaitGroup) {
-	for {
-		timeout := time.After(2 * time.Second)
-		select {
-		case res := <-s.parseResult:
-			//处理requests
-			for _, r := range res.Requests {
-				go s.SubmitTask(r)
-			}
-			for _, item := range res.Items {
-				go s.SubmitItems(item)
-			}
-		case <-timeout:
-			wg.Done()
-			return
-		}
+func NewScheduleQueue() *ScheduleQueue {
+	return &ScheduleQueue{
+		Queue:  []Request{},
+		Filter: bloom.NewWithEstimates(10000,0.01),
 	}
 }
 
-//处理items
-func (s *Schedule) Process(wg *sync.WaitGroup) {
-	for {
-		timeout := time.After(2 * time.Second)
-		select {
-		case item := <-s.items:
-			item.Process()
-		case <-timeout:
-			wg.Done()
-			return
-		}
+func (s *ScheduleQueue) Put(request Request, requests chan Request)  {
+	s.Lock()
+	temp := []byte(request.Url)
+	if !s.Filter.Test(temp) {
+		s.Filter.Add(temp)
+		s.Queue = append(s.Queue, request)
+	}
+	s.Unlock()
+	next := s.nextRequest()
+	if next != nil {
+		requests <- *next	
 	}
 }
+
+func (s *ScheduleQueue) nextRequest() *Request{
+	s.Lock()
+	defer s.Unlock()
+	if len(s.Queue) <= 0 {
+		return nil
+	}
+	next := s.Queue[0]
+	s.Queue = s.Queue[1:]
+	return &next
+}
+
