@@ -17,6 +17,7 @@ type LimitRate struct {
 
 func (l *LimitRate) Limit() bool {
 	result := false
+	// 相当于是一个自旋锁
 	for {
 		l.lock.Lock()
 		//判断最后一次执行时间与当前时间是否大于限制速率

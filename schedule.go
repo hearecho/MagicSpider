@@ -2,11 +2,12 @@ package MagicSpider
 
 import (
 	"github.com/bits-and-blooms/bloom/v3"
+	"github.com/hearecho/MagicSpider/utils"
 	"sync"
 )
 
 type schedule interface {
-	Put(request Request, requests chan Request)
+	Put(request Request, requests chan Request, lr *utils.LimitRate)
 }
 
 // 队列实现
@@ -23,7 +24,7 @@ func NewScheduleQueue() *ScheduleQueue {
 	}
 }
 
-func (s *ScheduleQueue) Put(request Request, requests chan Request)  {
+func (s *ScheduleQueue) Put(request Request, requests chan Request, lr *utils.LimitRate)  {
 	s.Lock()
 	temp := []byte(request.Url)
 	if !s.Filter.Test(temp) {
@@ -31,20 +32,25 @@ func (s *ScheduleQueue) Put(request Request, requests chan Request)  {
 		s.Queue = append(s.Queue, request)
 	}
 	s.Unlock()
-	next := s.nextRequest()
+	next := s.nextRequest(lr)
 	if next != nil {
 		requests <- *next	
 	}
 }
 
-func (s *ScheduleQueue) nextRequest() *Request{
+func (s *ScheduleQueue) nextRequest(lr *utils.LimitRate) *Request{
 	s.Lock()
 	defer s.Unlock()
-	if len(s.Queue) <= 0 {
+	// 限速器在scheduler中使用
+	if lr.Limit() {
+		if len(s.Queue) <= 0 {
+			return nil
+		}
+		next := s.Queue[0]
+		s.Queue = s.Queue[1:]
+		return &next	
+	} else {
 		return nil
 	}
-	next := s.Queue[0]
-	s.Queue = s.Queue[1:]
-	return &next
 }
 

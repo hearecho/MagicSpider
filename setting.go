@@ -10,9 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-/**
-从配置文件中读取配置
-*/
+// Setting 配置
 type Setting struct {
 	//爬虫名称
 	SpiderName string

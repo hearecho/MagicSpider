@@ -35,37 +35,36 @@ func (e *engine) Go() {
 	//设置waitgroup
 	wg := &sync.WaitGroup{}
 	wg.Add(e.workerCount + 2)
-	lr := &utils.LimitRate{}
-	lr.SetRate(S.Rate)
 	// 初始化chan
 	e.requests = make(chan Request, 100)
 	e.parseResults = make(chan ParseResult, 100)
 	e.items = make(chan Item, 100)
-
+	lr := &utils.LimitRate{}
+	lr.SetRate(S.Rate)
 
 	for _, r := range e.startRequests {
-		e.s.Put(r, e.requests)
+		e.s.Put(r, e.requests, lr)
 	}
 	//创建worker
 	for i := 0; i < e.workerCount; i++ {
-		go downloader(e, wg, lr)
+		go downloader(e, wg)
 	}
 	//处理Res
-	go e.Communicate(wg)
+	go e.Communicate(wg, lr)
 	go e.itemPipeline(wg)
 	wg.Wait()
 	utils.Info(fmt.Sprintf("crawl end. use time:%dms", time.Now().UnixNano()/1e6-start))
 }
 
 // Communicate 主要是负责管控数据流
-func (e *engine)Communicate(wg *sync.WaitGroup) {
+func (e *engine)Communicate(wg *sync.WaitGroup, lr *utils.LimitRate) {
 	for {
 		timeout := time.After(2 * time.Second)
 		select {
 		case res := <-e.parseResults:
 			//处理requests
 			for _, r := range res.Requests {
-				go e.s.Put(r, e.requests)
+				go e.s.Put(r, e.requests, lr)
 			}
 			for _, item := range res.Items {
 				i := item
