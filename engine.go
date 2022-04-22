@@ -71,8 +71,13 @@ func (e *engine) Go() {
 	wg.Wait()
 	// 保证在程序崩溃的时候会执行结束
 	defer func() {
-		StatusDB.Model(&StaDB{}).Where("ip = ? and spiderName = ?", ClientIP, S.SpiderName).
-			Updates(map[string]interface{}{"status":"end", "endReason":"normal", "endTime":time.Now()})
+		if p := recover(); p!= nil {
+			StatusDB.Model(&StaDB{}).Where("ip = ? and spiderName = ?", ClientIP, S.SpiderName).
+				Updates(map[string]interface{}{"status":"end", "endReason": "panic", "endTime":time.Now()})
+		} else {
+			StatusDB.Model(&StaDB{}).Where("ip = ? and spiderName = ?", ClientIP, S.SpiderName).
+				Updates(map[string]interface{}{"status":"end", "endReason":"normal", "endTime":time.Now()})
+		}
 	}()
 	utils.Info(fmt.Sprintf("crawl end. use time:%dms", time.Now().UnixNano()/1e6-start))
 }
