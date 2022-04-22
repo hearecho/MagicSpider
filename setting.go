@@ -3,11 +3,10 @@ package MagicSpider
 import (
 	"fmt"
 	"github.com/hearecho/MagicSpider/utils"
+	"github.com/spf13/viper"
 	"os"
 	"reflect"
 	"time"
-
-	"github.com/spf13/viper"
 )
 
 // Setting 配置
@@ -26,6 +25,9 @@ type Setting struct {
 	DocType string
 	//日志级别
 	LogLevel int
+	// 是否是分布式
+	Distribute bool
+	StaDB      string
 }
 
 var S = &Setting{
@@ -36,6 +38,8 @@ var S = &Setting{
 	Rate:        10000,
 	DocType:     "html",
 	LogLevel:    1,
+	Distribute:  false,
+	StaDB:       "",
 }
 
 func printSettings() {
@@ -82,6 +86,13 @@ func InitSetting() {
 	}
 	if viper.IsSet("base.logLevel") {
 		S.LogLevel = viper.GetInt("base.logLevel")
+	}
+	if viper.IsSet("base.distribute") {
+		// 只有在分布式环境下才会读取base.staDB
+		S.Distribute = viper.GetBool("base.distribute")
+	}
+	if viper.IsSet("base.staDB") {
+		S.StaDB = viper.GetString("base.staDB")
 	}
 	utils.Info("读取配置如下:")
 	printSettings()
